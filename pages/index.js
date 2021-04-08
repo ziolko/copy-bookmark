@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { minify } from "terser";
 import { useAsync } from "react-async-hook";
 
@@ -7,8 +7,9 @@ import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
 
 export default function Home() {
-  const [name, setName] = useState("Sample text");
-  const [content, setContent] = useState("Hello world!");
+  const ref = useRef();
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
   const sanitizedContent = content.replaceAll?.('"', '\\"');
   const sanitizedName = name.replaceAll?.('"', '\\"');
   const code = `
@@ -52,6 +53,10 @@ export default function Home() {
   const result = useAsync(() => minify(code), [code]);
   const href = `javascript:${result.result?.code}`;
 
+  useEffect(() => {
+    ref.current.focus();
+  }, []);
+
   return (
     <div>
       <Head>
@@ -68,7 +73,12 @@ export default function Home() {
         <Heading>Create copy bookmarklet</Heading>
         <Field>
           <div>Name</div>
-          <Input value={name} onInput={e => setName(e.target.value)} />
+          <Input
+            ref={ref}
+            value={name}
+            onInput={e => setName(e.target.value)}
+            placeholder="Type name..."
+          />
         </Field>
         <Field>
           <div>Content:</div>
