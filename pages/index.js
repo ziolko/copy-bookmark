@@ -28,15 +28,16 @@ export default function Home() {
     document.body.removeChild(textarea);
     
     notification.style.position = 'fixed';
-    notification.style.font = '14px Arial, sans-serif;';
+    notification.style.font = '16px Arial, sans-serif;';
     notification.style.right = '15px';
     notification.style.top = '15px';
-    notification.style.padding = '10px';
-    notification.style.background = '#9d9';
+    notification.style.padding = '15px 20px';
+    notification.style.background = '#eeffee';
     notification.style.color = '#333';
-    notification.style.border = '1px dashed black';
-    notification.style.opacity = 0.8;
+    notification.style.border = '2px solid #aaa';
+    notification.style.boxShadow = '3px 3px 15px 0px rgba(0, 0, 0, 0.3)';
     notification.style.borderRadius = '10px';
+    notification.style.fontStyle = 'italic';
     notification.style.zIndex = '9999999';
     notification.style.pointerEvents = 'none';
     notification.innerText = "Copied ${sanitizedName} to clipboard";
@@ -56,22 +57,28 @@ export default function Home() {
       <Head>
         <title>Copy bookmarklet</title>
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Linden+Hill:ital@1&family=Roboto&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
       <Main>
-        <h1>Create copy bookmarklet</h1>
-        <label>
-          Name:
-          <input value={name} onInput={e => setName(e.target.value)} />
-        </label>
-        <label>
+        <Heading>Create copy bookmarklet</Heading>
+        <Field>
+          <div>Name</div>
+          <Input value={name} onInput={e => setName(e.target.value)} />
+        </Field>
+        <Field>
           <div>Content:</div>
-          <TextareaAutosize
+          <Input
+            as={TextareaAutosize}
             value={content}
             onInput={e => setContent(e.target.value)}
-            style={{ width: 600 }}
+            placeholder="Type content here..."
           />
-        </label>
+        </Field>
         <div>
           <CopyText href={href}>Copy {name}</CopyText>
         </div>
@@ -80,9 +87,20 @@ export default function Home() {
   );
 }
 
+const Heading = styled.h1`
+  font-family: "Linden Hill", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 68px;
+  margin-bottom: 20px;
+`;
+
 const Main = styled.main`
-  width: 800px;
+  width: 600px;
   margin: auto;
+  font-family: "Linden Hill", serif;
+  font-weight: 400;
+  font-size: 20px;
 `;
 
 const CopyText = styled.a`
@@ -92,6 +110,18 @@ const CopyText = styled.a`
   color: black;
   text-decoration: none;
   border-radius: 10px;
-  margin-top: 10px;
   display: inline-block;
+`;
+
+const Input = styled.input`
+  font-family: "Linden Hill", serif;
+  font-weight: 400;
+  font-size: 20px;
+  padding: 10px;
+  width: 600px;
+`;
+
+const Field = styled.label`
+  margin-bottom: 20px;
+  display: block;
 `;
