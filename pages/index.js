@@ -10,58 +10,15 @@ export default function Home() {
   const ref = useRef();
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
-  const sanitizedContent = content.replaceAll?.('"', '\\"');
-  const sanitizedName = name.replaceAll?.('"', '\\"');
-  const code = `
-    (function (text) {
-    var textarea = document.createElement('textarea');
-    var selection = document.getSelection();
-    var notification = document.createElement('div');
-  
-    textarea.textContent = text;
-    document.body.appendChild(textarea);
-  
-    selection.removeAllRanges();
-    textarea.select();
-    document.execCommand('copy');
-  
-    selection.removeAllRanges();
-    document.body.removeChild(textarea);
-    
-    notification.style.position = 'fixed';
-    notification.style.font = '16px Arial, sans-serif;';
-    notification.style.right = '15px';
-    notification.style.top = '15px';
-    notification.style.padding = '15px 20px';
-    notification.style.background = '#eeffee';
-    notification.style.color = '#333';
-    notification.style.border = '2px solid #aaa';
-    notification.style.boxShadow = '3px 3px 15px 0px rgba(0, 0, 0, 0.3)';
-    notification.style.borderRadius = '10px';
-    notification.style.fontStyle = 'italic';
-    notification.style.zIndex = '9999999';
-    notification.style.pointerEvents = 'none';
-    notification.innerText = "Copied ${sanitizedName} to clipboard";
-    document.body.appendChild(notification);
-    setTimeout(function() {
-        document.body.removeChild(notification);
-    }, 2500);
-    
-  })("${sanitizedContent}")
-  `;
+  const bookmarkCode = useBookmarkCode(name, content);
+  const minifiedCode = useAsync(() => minify(bookmarkCode), [bookmarkCode]);
 
-  const result = useAsync(() => minify(code), [code]);
-  const href = `javascript:${result.result?.code}`;
-
-  useEffect(() => {
-    ref.current.focus();
-  }, []);
+  useEffect(() => void ref.current.focus(), []);
 
   return (
     <div>
       <Head>
         <title>Copy bookmarklet</title>
-        <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
           href="https://fonts.googleapis.com/css2?family=Linden+Hill:ital@1&family=Roboto&display=swap"
@@ -70,7 +27,7 @@ export default function Home() {
       </Head>
 
       <Main>
-        <Heading>Create copy bookmarklet</Heading>
+        <Heading>Create "copy" bookmarklet</Heading>
         <Field>
           <div>Name</div>
           <Input
@@ -90,11 +47,59 @@ export default function Home() {
           />
         </Field>
         <div>
-          <CopyText href={href}>Copy {name}</CopyText>
+          <p>
+            Drag and drop the following link to the bookmark bar. This will
+            create a bookmarklet that copies the content to the clipboard.
+          </p>
+          <CopyText href={`javascript:${minifiedCode.result?.code}`}>
+            Copy {name}
+          </CopyText>
         </div>
       </Main>
     </div>
   );
+}
+
+function useBookmarkCode(name, content) {
+  const sanitizedContent = content.replaceAll?.("`", "\\`");
+  const sanitizedName = name.replaceAll?.("`", "\\`");
+  return `
+    (function (text) {
+    var textarea = document.createElement('textarea');
+    var selection = document.getSelection();
+    var notification = document.createElement('div');
+  
+    textarea.textContent = text;
+    document.body.appendChild(textarea);
+  
+    selection.removeAllRanges();
+    textarea.select();
+    document.execCommand('copy');
+  
+    selection.removeAllRanges();
+    document.body.removeChild(textarea);
+    
+    notification.style.position = 'fixed';
+    notification.style.font = '16px Arial, sans-serif';
+    notification.style.right = '15px';
+    notification.style.top = '15px';
+    notification.style.padding = '15px 20px';
+    notification.style.background = '#eeffee';
+    notification.style.color = '#333';
+    notification.style.border = '2px solid #aaa';
+    notification.style.boxShadow = '3px 3px 15px 0px rgba(0, 0, 0, 0.3)';
+    notification.style.borderRadius = '10px';
+    notification.style.fontStyle = 'italic';
+    notification.style.zIndex = '9999999';
+    notification.style.pointerEvents = 'none';
+    notification.innerText = \`Copied ${sanitizedName} to clipboard\`;
+    document.body.appendChild(notification);
+    setTimeout(function() {
+        document.body.removeChild(notification);
+    }, 2500);
+    
+  })(\`${sanitizedContent}\`)
+  `;
 }
 
 const Heading = styled.h1`
