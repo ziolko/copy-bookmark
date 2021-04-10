@@ -3,7 +3,7 @@ import { minify } from "terser";
 import { useAsync } from "react-async-hook";
 
 import Head from "next/head";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
 
 export default function Home() {
@@ -24,8 +24,9 @@ export default function Home() {
           href="https://fonts.googleapis.com/css2?family=Linden+Hill:ital@1&family=Roboto&display=swap"
           rel="stylesheet"
         />
+        <meta name="color-scheme" content="dark light" />
       </Head>
-
+      <Body />
       <Main>
         <Heading>Create "copy" bookmarklet</Heading>
         <Field>
@@ -34,7 +35,7 @@ export default function Home() {
             ref={ref}
             value={name}
             onInput={e => setName(e.target.value)}
-            placeholder="Type name..."
+            placeholder="Type bookmarklet name..."
           />
         </Field>
         <Field>
@@ -43,7 +44,7 @@ export default function Home() {
             as={TextareaAutosize}
             value={content}
             onInput={e => setContent(e.target.value)}
-            placeholder="Type content here..."
+            placeholder="Type content to copy..."
           />
         </Field>
         <p>
@@ -118,10 +119,10 @@ const Main = styled.main`
 `;
 
 const CopyText = styled.a`
-  border: 1px solid black;
-  background: white;
+  border: 1px solid var(--primary-color);
+  background: var(--input-background-color);
   padding: 10px;
-  color: black;
+  color: var(--primary-color);
   text-decoration: none;
   border-radius: 10px;
   display: inline-block;
@@ -135,9 +136,37 @@ const Input = styled.input`
   width: 600px;
   max-width: 100%;
   box-sizing: border-box;
+  background: var(--input-background-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+
+  &::placeholder {
+    color: var(--primary-color);
+  }
 `;
 
 const Field = styled.label`
   margin-bottom: 20px;
   display: block;
+`;
+
+const Body = createGlobalStyle`
+  body {
+    --primary-color: #222;
+    --background-color: #eee;
+    --input-background-color: #ddd;
+
+    color: var(--primary-color);
+    background: var(--background-color);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    body {
+      --primary-color: #eee;
+      --background-color: #222;
+      --input-background-color: #333;
+    }
+  }
+  
+  
 `;
