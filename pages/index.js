@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Copy bookmarklet</title>
+        <title>Create "copy" bookmarklet</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
           href="https://fonts.googleapis.com/css2?family=Linden+Hill:ital@1&family=Roboto&display=swap"
