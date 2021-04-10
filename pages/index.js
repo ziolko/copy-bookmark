@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => void ref.current.focus(), []);
 
   return (
-    <div>
+    <>
       <Head>
         <title>Copy bookmarklet</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -46,17 +46,15 @@ export default function Home() {
             placeholder="Type content here..."
           />
         </Field>
-        <div>
-          <p>
-            Drag and drop the following link to the bookmark bar. This will
-            create a bookmarklet that copies the content to the clipboard.
-          </p>
-          <CopyText href={`javascript:${minifiedCode.result?.code}`}>
-            Copy {name}
-          </CopyText>
-        </div>
+        <p>
+          Drag and drop the following link to the bookmark bar. This will create
+          a bookmarklet that copies the provided content to the clipboard.
+        </p>
+        <CopyText href={`javascript:${minifiedCode.result?.code}`}>
+          Copy {name}
+        </CopyText>
       </Main>
-    </div>
+    </>
   );
 }
 
@@ -111,6 +109,7 @@ const Heading = styled.h1`
 `;
 
 const Main = styled.main`
+  max-width: calc(100% - 40px);
   width: 600px;
   margin: auto;
   font-family: "Linden Hill", serif;
@@ -134,6 +133,8 @@ const Input = styled.input`
   font-size: 20px;
   padding: 10px;
   width: 600px;
+  max-width: 100%;
+  box-sizing: border-box;
 `;
 
 const Field = styled.label`
